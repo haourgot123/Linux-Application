@@ -1,0 +1,92 @@
+Linux Application
+Phần 1: System Call
+Trong kiến trúc Linux, không gian bộ nhớ được chia thành 2 phần là user space và kernel space. Theo đó cũng sẽ tồn tại 2 chế độ là user mode và kernel mode. Các chỉ lệnh được gọi từ chương trình như đóng mở file(fopen,fclose) hoặc in 1 thông tin(printf) chỉ có thể thực thi và truy cập cùng nhớ ở tâng user mà không được truy cập vùng nhớ của kernel
+Cơ chế phân tách user space với kernel space và không cho phép người dùng tự ý truy cập tài nguyên của kernel giúp quản lý và bảo vệ kernel cũng như toàn bộ hệ thống.
+Giả sử nếu bạn truy cập vào vùng nhớ trái phép trên user space thì chỉ ứng dụng của bạn bị crash, còn khi bạn truy cập trai phép trên vùng nhớ của kernel thì toàn bộ thiết bị sẽ bị crash
+Vậy để user gọi xướng kernel hay thao tác điều khiển các device driver, kernel sẽ cung cấp cho user các API, còn gọi cal system call
+System call là một cửa ngõ vào kernel, cho phép tiến trình trên tầng user yêu cầu kernel thực thi một vài tác vụ cho mình. Những dịch vụ này có thể là tạo một tiến trình mới (fork), thực thi I/O (read, write), hoặc tạo ra một pipe cho giao tiếp liên tiến trình (IPC).
+Có một số điều cần chú ý về system call như sau:
+
+Khi một tiến trình gọi một system call, CPU sẽ chuyển từ chế độ user mode sang kernel mode, điều này cho phép CPU truy cập các vùng nhớ và thực hiện các chỉ lệnh của kernel.
+
+Mỗi system call được kernel định danh bằng một số duy nhất. Tiến trình trên tầng user không biết đến các số này, thay vào đó, nó gọi một system call bằng tên hàm (ví dụ như open(), read()...).
+
+Mỗi system call có thể có một số tham số truyền để cung cấp thông tin từ user truyền xuống kernel và ngược lại.
+
+Phần 2: Quá trình thực thi 1 system call
+Giả sử ta gọi hàm :
+#include <stdio.h>
+FILE *fopen(const char *filename, const char *mode)
+
+Hàm fopen() là 1 hàm thư viện dùng để thực thi việc chuyển xuống kernel mode
+và yêu cầu kernel mở 1 file dưới kernel có đường dẫn là "filename" với chế độ mode.
+Hàm fopen() được triển khai bằng cách gọi system call open(), cụ thể các bước như sau:
+1. copy các đối số ( trong trường hợp này là "filename" và "mode") vào các thanh ghi, nơi mà các lệnh của luồng thực thi system call sẽ đọc và sử dụng được 
+2. Sao chép số system call vào 1 thanh ghi của CPU (%eax). Ví dụ system call number của open() là 5 -> 5 sẽ được lưu vào thanh ghi %eax
+3. Thực hiện 1 chỉ lệnh máy gọi là trap machine instruction để chuyển chế độ CPU từ 
+user mode sang kernel khác. Chỉ lệnh này có thể là 1 mã ngắt mềm(software interupt)
+với số ngắt(interupt number) là 0x80 hoặc chỉ lệnh SYSENTER (trong các kiến trúc intel) hoặc chỉ lệnh SYSCALL(trong AMD)
+4. Kernel gọi đến luồng system_call(nằm trong file arch/x86/entry_32.S), tại đây nó sẽ làm các công việc:
+Copy giá trị các đối số trong thanh ghi mà đã lưu vào trong bước 1 vào kernel stack
+Kiểm tra tính hợp lệ của các đối số
+Gọi system_call_service_routine thích hợp bằng cách tra cứu số system call được sao chép ở bước 2 trong bảng system_call_routine (sys_call_table)
+Gửi kết quả trả về cho hàm wrapper và cuối cùng là chuyển về chế độ CPU từ kernel mode sang user mode
+
+Phần 3: Giới thiệu về file I/O
+Hệ điều hành Linux có các loại file sau đây :
+Kí hiệu       Loại file
+-		File thường
+d		Đường dẫn(Directory)
+c		Character device file 
+b		Block device file
+s		Domain socket
+p		pipe
+l		symbolic link
+
+Để đọc và ghi 1 file, trước tiên nó phải được mở ra. Mỗi file được mở sẽ được định danh bởi 1 số nguyên dương duy nhất
+được gọi là mô tả file(file descripttion). Các system call thao tác với file này sẽ dùng file description này làm thao số truyền xuống kernel. Với mỗi process, kernel sẽ lưu và duy trì 1 bảng danh sách các mô tả file được gọi là file table và sử dụng bảng đó để tra cứu theo file discriptor và tìm đến đúng file mà tầng user muốn thao tác
+
+Theo quy ước, 1 chương trình chạy luôn có 3 file được mở có số mô tả file lần lượt là 0 (standard input -stdin), 1(standard output - stdout), 2 (standard error - stderr). Khi lập trình chúng ta k nên hard code các file descriptor là các số mà nên 
+sử dụng các macro (định nghĩa trong thư viện POSIX <unistd.h>) là:
+STDIN_FILENO, STDOUT_FILENO và STDERR_FILENO
+
+Phần 4: Thao tác file trong Linux
+1. Mở file:
+Để mở 1 file trong linux ta sử dung system call open():
+*int open(const char *pathname, int flags)
+*int open(const char *pathname, int flags, mode_t mode)
+System call open() mở file có tên với đường dẫn đầy đủ "pathname" hoặc tạo ra và mở file đó nếu nó chưa tồn tại .
+Nếu system call open() gọi thành công, nó sẽ trả về một số nguyên là số mô tả file của file đó, số này được sử dụng để tham chiếu đến file đó cho các system call sau này. Nếu system call thất bại, nó sẽ trả về -1 và ghi giá trị lỗi vào biến toàn cục errno.
+Đối số “flags” là một bitmask dùng để chỉ chế độ truy cập vào file. Đối số “mode” cũng là một bitmask để chỉ định quyền truy cập (permission) vào file nếu open() được dùng để tạo ra một file mới (với cờ truyền vào là O_CREAT). Nếu open() chỉ mở một file có sẵn thì có thể bỏ qua đối số “mode”.
+
+
+Flag		Mục đích	
+O_RDONLY	Mở file để chỉ đọc	
+O_WRONLY	Mở file để chỉ ghi	
+O_RDWR		Mở file để đọc và ghi	
+O_CLOEXEC	Thiết lập cờ close-on-exec	
+O_CREAT		Tạo file nếu nó chưa tồn tại	
+O_DIRECT	Trao đổi dữ liệu trực tiếp giữa user space và file trên ổ cứng, không qua kernel buffer cache 		 
+O_DIRECTORY	Trả về fail nếu đối số “pathname” không phải đường dẫn	
+O_EXCL		Dùng với O_CREAT: chỉ tạo một file mới	
+O_LARGEFILE	Hỗ trợ mở một file lớn	 
+O_NOATIME	Không cập nhật lần mở file trước khi đọc file	 
+O_NOCTTY	Không để file “pathname” trở thành một terminal điều khiển
+O_NOFOLLOW	Không tham chiếu ngược các liên kết mềm	
+O_TRUNC		Xóa nội dung file hiện tại nếu có của file để có độ dài là 0
+O_APPEND	Ghi tiếp nối từ địa chỉ cuối cùng của file	
+O_ASYNC		Tạo ra một signal khi file sẵn sàng đọc hoặc ghi	 
+O_DSYNC		Cung cấp việc bảo toàn dữ liệu đã được đồng bộ	
+O_NONBLOCK	Mở file ở chế độ nonblock, nghĩa là read() hoặc write() sẽ return ngay nếu file chưa sẵn sàng.	
+O_SYNC		Đồng bộ dữ liệu được ghi vào file	
+
+2.Đóng file 
+Để đóng một mô tả file, chúng ta dùng system call close(). Mô tả file này cũng sẽ được giải phóng và có thể cấp phát lại sau này bởi tiến trình. Khi một tiến trình bị kết thúc, tất cả các mô tả file đang mở sẽ tự động được kernel thu hồi lại.
+Code:
+int close(int fd)
+System call close() trả về giá trị 0 nếu thành công, 1 nếu xảy ra lỗi. Các lỗi của close() có thể là đóng một mô tả file chưa được mở, hoặc đóng một mô tả file hai lần.
+Khi lập trình Linux, chúng ta nên tạo thành thói quen luôn đóng các mô tả file sau khi sử dụng. Việc này sẽ làm cho code của chúng ta dễ đọc hơn.  Đồng thời giải phóng mô tả file cho tiến trình sử dụng về sau vì số lượng mô tả file của tiến trình có giới hạn, việc này đặc biệt quan trọng với những daemon hoặc tiến trình tồn tại mãi trong hệ thống ví dụ như một máy server.
+
+
+
+
