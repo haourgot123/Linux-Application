@@ -1,0 +1,31 @@
+1. feof() function
+Hàm feof trong C được sử dụng để kiểm tra
+xem đã đến cuối tệp hay chưa khi đọc 1 tệp
+hoặc 1 luồng dữ liệu. Hàm này trả về 1 giá trị khác
+0 nếu đã đến cuối tệp và 0 nếu chưa đến cuối tệp
+
+Cú pháp:
+
+int feof(FILE *stream)
+
+stream : con trỏ đến cấu trúc FILE đại diện cho tệp 
+họăc luồng dữ liệu mà bạn muốn kiểm tra
+
+2. ferror() function 
+Hàm này dùng để kiểm tra xem có xảy ra lỗi khi
+thao tác trên 1 tệp hoặc luồng dữ liệu. Hàm này trả về
+1 giá trị khác 0 nếu có lỗi và bằng 0 nếu không có lỗi
+
+Cú pháp:
+int ferror(FILE *stream)
+
+3. clearerr function
+Hàm này dùng để xóa cờ lỗi và cờ kết thúc file
+Nó cho phép bạn đặt lại trạng thái lỗi để sau khi gọi clearerr()
+bạn có thể tiếp tục thao tác trên tệp mà không bị 
+ảnh hướng bởi trạng thái lỗi và trạng thái
+cuối tệp trước đó
+
+Cú pháp:
+
+void clearerr(FILE *stream)

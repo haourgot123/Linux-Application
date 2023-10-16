@@ -1,0 +1,104 @@
+Các cờ `_IONBF`, `_IOLBF`, và `_IOFBF` là các cờ dùng để thiết lập cách bộ đệm (buffer) hoạt động trong C và C++ khi bạn thực hiện I/O (đầu vào/đầu ra) trên tệp tin hoặc thiết bị. Dưới đây là mô tả chi tiết về mỗi cờ:
+
+1. **_IONBF (I/O Unbuffered)**:
+   - `setvbuf(file, NULL, _IONBF, 0)` sử dụng cờ `_IONBF` để thiết lập bộ đệm không sử dụng. Điều này có nghĩa rằng mọi hoạt động I/O sẽ được thực hiện ngay lập tức mà không cần bộ đệm. Điều này phù hợp khi bạn muốn đảm bảo rằng dữ liệu được ghi hoặc đọc mà không có bất kỳ sự trễ nào từ bộ đệm.
+
+2. **_IOLBF (I/O Line Buffered)**:
+   - `setvbuf(file, NULL, _IOLBF, size)` sử dụng cờ `_IOLBF` để thiết lập bộ đệm theo kiểu "line buffering". Dữ liệu sẽ được ghi vào hoặc đọc từ bộ đệm theo từng dòng hoặc theo một số ký tự nhất định trước khi nó được ghi ra hoặc đọc từ tệp tin. Cờ này thường được sử dụng khi bạn muốn thực hiện I/O theo các dòng văn bản riêng lẻ để dễ quản lý hoặc khi làm việc với tệp tin văn bản.
+
+3. **_IOFBF (I/O Fully Buffered)**:
+   - `setvbuf(file, buffer, _IOFBF, size)` sử dụng cờ `_IOFBF` để thiết lập bộ đệm theo kiểu "fully buffered". Bộ đệm sẽ được cấp phát với kích thước `size` và hoạt động theo kiểu buffered. Điều này có nghĩa rằng dữ liệu sẽ được ghi vào hoặc đọc từ bộ đệm cho đến khi bộ đệm đầy hoặc khi bạn yêu cầu nó được ghi ra tệp tin bằng cách sử dụng hàm `fflush` hoặc khi bạn đóng tệp tin.
+
+Các cờ `_IONBF`, `_IOLBF`, và `_IOFBF` cho phép bạn kiểm soát cách I/O hoạt động trong các tình huống khác nhau tùy thuộc vào nhu cầu của ứng dụng của bạn.
+Hàm `setvbuf` là một hàm trong ngôn ngữ lập trình C được sử dụng để thiết lập hoặc thay đổi cách bộ đệm (buffer) hoạt động cho I/O (Input/Output) trên một tệp tin. Hàm này cho phép bạn kiểm soát cách dữ liệu được đọc hoặc ghi vào bộ đệm trước khi nó được gửi hoặc đọc từ tệp tin hoặc thiết bị.
+
+Cú pháp của hàm `setvbuf` là:
+
+```c
+int setvbuf(FILE *stream, char *buffer, int mode, size_t size);
+```
+
+- `stream`: Con trỏ đến tệp tin mà bạn muốn thiết lập bộ đệm.
+- `buffer`: Con trỏ đến bộ đệm bạn muốn sử dụng. Nếu bạn muốn sử dụng bộ đệm mặc định, bạn có thể đặt `buffer` thành `NULL`.
+- `mode`: Chế độ hoạt động của bộ đệm, có thể là một trong các hằng số sau:
+  - `_IONBF`: I/O unbuffered, không sử dụng bộ đệm.
+  - `_IOLBF`: I/O line buffered, sử dụng bộ đệm line buffered.
+  - `_IOFBF`: I/O fully buffered, sử dụng bộ đệm fully buffered.
+- `size`: Kích thước của bộ đệm. Thường được sử dụng khi bạn muốn tự cấp phát bộ đệm và đặt `buffer` thành địa chỉ của bộ đệm đó.
+
+Dưới đây là một ví dụ về việc sử dụng hàm `setvbuf` để thiết lập bộ đệm cho một tệp tin:
+
+```c
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("example.txt", "w");
+    if (file != NULL) {
+        char buffer[1024];
+        setvbuf(file, buffer, _IOFBF, sizeof(buffer)); // Sử dụng bộ đệm fully buffered với kích thước 1024 bytes
+        fprintf(file, "Hello, World!\n");
+        fclose(file);
+    }
+    return 0;
+}
+```
+
+Trong ví dụ này, `setvbuf` được sử dụng để thiết lập bộ đệm cho tệp "example.txt" với cờ `_IOFBF` (fully buffered) và kích thước 1024 bytes. Bộ đệm được sử dụng để tối ưu hóa hoạt động I/O trên tệp tin.
+Hàm `setbuf` là một hàm trong ngôn ngữ lập trình C được sử dụng để thiết lập hoặc tắt bộ đệm (buffer) cho một tệp tin cụ thể. Hàm này cho phép bạn kiểm soát việc sử dụng bộ đệm cho I/O trên tệp tin. Cú pháp của hàm `setbuf` là:
+
+```c
+void setbuf(FILE *stream, char *buffer);
+```
+
+- `stream`: Con trỏ đến tệp tin mà bạn muốn thiết lập bộ đệm.
+- `buffer`: Con trỏ đến bộ đệm bạn muốn sử dụng. Nếu bạn muốn tắt bộ đệm, bạn có thể đặt `buffer` thành `NULL`.
+
+Ví dụ sử dụng hàm `setbuf`:
+
+```c
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("example.txt", "w");
+    if (file != NULL) {
+        char buffer[1024];
+        setbuf(file, buffer); // Sử dụng bộ đệm tự cấp phát
+        fprintf(file, "Hello, World!\n");
+        fclose(file);
+    }
+    return 0;
+}
+```
+
+Trong ví dụ này, `setbuf` được sử dụng để thiết lập bộ đệm cho tệp "example.txt" để sử dụng bộ đệm tự cấp phát với kích thước mặc định của hệ thống (thường là 1024 bytes). Nếu bạn muốn tắt bộ đệm, bạn có thể đặt `buffer` thành `NULL`.
+
+Lưu ý rằng hàm `setbuf` có thể được sử dụng để tối ưu hóa hoạt động I/O trên tệp tin theo cách bạn mong muốn.
+Hàm `fflush` trong ngôn ngữ lập trình C được sử dụng để đẩy (flush) bộ đệm (buffer) I/O của một tệp tin hoặc thiết bị. Khi bạn gọi `fflush`, nó đảm bảo rằng dữ liệu trong bộ đệm được ghi vào tệp tin hoặc thiết bị đích ngay lập tức, thay vì đợi cho đến khi bộ đệm đầy hoặc có sự kiện khác xảy ra.
+
+Cú pháp của hàm `fflush` là:
+
+```c
+int fflush(FILE *stream);
+```
+
+- `stream`: Con trỏ đến tệp tin hoặc thiết bị mà bạn muốn đẩy bộ đệm của nó.
+
+Ví dụ sử dụng `fflush` khi ghi dữ liệu vào một tệp tin:
+
+```c
+#include <stdio.h>
+
+int main() {
+    FILE *file = fopen("example.txt", "w");
+    if (file != NULL) {
+        fprintf(file, "Hello, World!");
+        fflush(file); // Đảy dữ liệu từ bộ đệm vào tệp tin
+        fclose(file);
+    }
+    return 0;
+}
+```
+
+Trong ví dụ này, sau khi ghi dữ liệu vào tệp "example.txt" bằng `fprintf`, hàm `fflush` được gọi để đảm bảo rằng dữ liệu đã được ghi vào tệp.
+
+`fflush` thường được sử dụng khi bạn muốn đảm bảo rằng dữ liệu đã được ghi vào tệp tin ngay lập tức, chẳng hạn khi bạn cần ghi log hoặc gửi dữ liệu qua mạng.

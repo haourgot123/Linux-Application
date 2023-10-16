@@ -1,0 +1,24 @@
+1. File open:
+FILE *fopen(const char *pathname, const char *mode)
+
+Các mode :
+'r' : O_RDONLY
+'r+': O_RDWR
+'w' : O_WRONLY | O_CREAT | O_TRUNC
+'w+': O_RDWR | O_CREAT | O_TRUNC
+'a' : O_WRONLY | O_CREAT | O_APPEND
+'a+': O_RDWR | O_CREAT | O_APEEND
+
+close function :
+int fclose(FILE *stream)
+
+2. READ FILE OR WRITE FILE
+fread() function
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+fwrite() function
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+
+fseek() function
+
+int fseeek(FILE *stream, long offset, int whence)

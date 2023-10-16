@@ -1,0 +1,35 @@
+format output,write
+printf() : int printf(const char *format,...)
+fprintf(): int fprintf(FILE *stream, const char *format,...)
+dprintf(): int dprintf(int fd, const char *format,...)
+sprintf(): int sprintf(char *buff, const char *format,..)
+snprintf(): int snprintf(char *buff,size_t size, const char *format,..)
+format input, read:
+scanf()
+fscanf()
+sscanf()
+
+1. Hàm sprintf():
+Dùng để định dạng và ghi dữ liệu vào 1 chuỗi string, thay vì ghi 
+vào 1 tệp. Hàm này hoạt động tương tự như printf()
+nhung thay vì hiển thị kết quả lên màn hình, nó đưa kết quả vào 1 chuỗi
+
+2. Hàm snprintf():
+Tương tự như hàm sprintf() nhưng có thêm sự kiểm soats thêm về việc đảm bảo không xảy ra 
+tràn bộ nhớ. snprintf() cho phép bạn xác định kích thước tối ta của chuỗi kết quả 
+và nó sẽ cắt ngắn chuối nếu vượt quá kích thước đó để tránh tràn bộ nhớ.
+Hàm này trả về số lượng kí tự đã ghi vào chuỗi(không tính kí tự kết thúc null)
+
+3. Hàm fscanf():
+Dùng để đọc dữ liệu từ 1 file.
+
+Cú pháp :
+int(fscanf(FILE *stream, const char *format, ...)
+Nếu không đọc được bất kì phần tử nào nó trả về 0 hoặc EOF khi đọc đến cuối tệp
+
+4.Hàm sscanf():
+Hàm này dùng để đọc dữ liệu từ 1 chuỗi và định dang dữ liệu theo 1 mẫu đã cho
+Hàm sscanf() tương tự như scanf() nhưng thay vì đọc từ keyboard hoặc từ tệp nó đọc 
+từ 1 chuỗi 
+Cú pháp:
+int sscanf(const char *str, const char *format, ...);

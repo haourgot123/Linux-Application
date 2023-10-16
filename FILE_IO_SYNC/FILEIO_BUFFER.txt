@@ -1,0 +1,33 @@
+1. fsync() function
+
+#include <unistd.h>
+int fsync(int fd)
+
+Chức năng:
+Đẩy toàn bộ data và metadata xuống ổ cứng.
+return 0 nếu thành công
+return -1 nếu xảy ra lỗi 
+
+2. fdatasync() function
+
+int fdatasync(int fd)
+
+Chức năng:
+fdatasync là system call tương ứng với phương pháp đồng bộ toàn vẹn dữ liệu I/O, nghĩa là
+đồng bộ dữ liệu và các thuộc tính metadata cần thiết
+
+fdatasync giảm số lần thao tác với ổ cứng so với fsync. Ví dụ nếu ghi vào 1 file mà dữ liệu 
+thay đổi trong khi kich thước file không đổi thì fdatasync chỉ cập nhật dữ liệu vào file, không 
+thao tác với metadata của file đó. Vì data và metadata thương nằm ở 2 vùng nhớ khác nhau trong ổ cứng 
+giảm số lần thao tác với metadata của file sẽ làm tăng đáng kể performance của hệ thống 
+
+
+3. sync() function
+
+void sync(void)
+System call này sẽ đẩy tất cả kernel buffer chứa thông tin file xuống ổ cứng. 
+
+Các cờ :
+O_SYNC : đồng bộ toàn bộ file
+O_DSYNC: đồng bộ dữ liệu
+O_RSYNC: đồng bộ tất cả yêu cầu cả đọc và ghi file

@@ -1,0 +1,36 @@
+Hàm fcntl trong Linux là 1 hàm hệ thống
+(system call) được sử dụng để thao tác trên
+các file hoặc socket. Hàm này có thể được sử 
+dụng để thực hiện các công việc như kiểm tra 
+hoặc thiết lập thuộc tính của tệp, khóa tệp, 
+hoặc thư viện các thao tác khác liên quan đến
+việc quản lý tệp trong hệ thống tệp của Linux
+
+Nguyên mẫu hàm:
+#include <fcntl.h>
+
+int fcntl(int fd, int cmd, ... /* arg */);
+
+trong đó:
+
+fd : file desciptor
+cmd: là 1 giá trị nguyên xác định loại thao tác
+mà bạn muốn thực hiện trên tệp
+Có các giá trị của cmd khác nhau để thực hiện các 
+tác vụ khác nhau
+
+Các cmd phổ biến:
+
+F_DUPFD: Sao chép 1 mô tả file sang 1 mô tả file khác
+với 1 số mô tả file mới
+F_GETFL : Lấy các cờ(flags) hiện tại của file
+F_SETFL : Đặt các cờ cho tệp
+F_GETLK : Lấy thông tin khóa của tệp
+F_SETLK : Đặt khóa trên tệp
+F_SETLKW: Đặt khóa trên tệp và chờ cho đến khi khóa có thể
+được đặt
+
+Chú ý: Trong hệ thống Linux, file descriptor đã mở sẵn:
+0 : stdin
+1 : stdout
+2 : stderr
