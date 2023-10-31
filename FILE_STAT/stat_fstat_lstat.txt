@@ -1,0 +1,126 @@
+1. stat()
+
+int stat(const char *path, struc stat *buf)
+
+- Sử dụng để lấy thông tin về 1 tệp hoặc thư
+mục trong hệ thống tệp của bạn. Hàm này bạn sẽ điền
+thông tin vào cấu trúc struct stat mà bạn truyền vào thông qua con trỏ buf
+
+Mô tả:
+
++ const char *path : Đây là đường dẫn đến tệp hoặc thư mục mà 
+bạn muốn lấy thông tin. Đường dân này có thể là 1 đường dẫn tương đối hoặc đường
+dẫn tuyệt đối đến tệp hoặc thư mục
++ struct stat *buf : Đây là con trỏ trỏ đến 1 câu trúc struct stat
+trong đó thông tin sẽ được lưu trữ sau khi hàm stat thực thi.Cấu trúc struct stat
+chứa thông tin về tệp hoặc thư mục, bao gôm kích thước, quyền truy cập
+thời gian sửa đổi và nhiều thông tin khac
+
++ Hàm stat trả về 0 nếu thành công và -1 nếu xảy ra lỗi
+
+- Cấu trúc struc stat:
+struct stat {
+    dev_t     st_dev;         // Thiết bị đầu tiên
+    ino_t     st_ino;         // Số inode
+    mode_t    st_mode;        // Quyền truy cập và kiểu tệp
+    nlink_t   st_nlink;       // Số liên kết
+    uid_t     st_uid;         // ID người dùng chủ sở hữu
+    gid_t     st_gid;         // ID nhóm chủ sở hữu
+    dev_t     st_rdev;        // Thiết bị (nếu là tệp thiết bị)
+    off_t     st_size;        // Kích thước tệp (bytes)
+    blksize_t st_blksize;     // Kích thước khối I/O mặc định cho hệ thống tệp
+    blkcnt_t  st_blocks;      // Số lượng khối được sử dụng
+    struct timespec st_atime; // Thời gian truy cập lần cuối
+    struct timespec st_mtime; // Thời gian sửa đổi lần cuối
+    struct timespec st_ctime ; // Thời gian tạo hoặc thay đổi lần cuối
+    __ino_t   st_ino64;       // Để tương thích với các phiên bản cũ hơn
+    __dev_t   st_dev64;       // Để tương thích với các phiên bản cũ hơn
+};
+
+1.st_mode : đây là 1 số nguyên biểu diễn quyền truy cập của tệp hoặc thư mục, bao gồm
+quyền đọc, quyền ghi và quyền thực thi. Bạn có thể sử dụng các hằng số
+và toán tử bit để trích xuất thông tin về quyền truy cập cụ thể
+2.st_size : Đây là kích thước của file(bytes)
+3.st_uid : Là số nguyên biểu diễn UserID của file hoặc dir
+4.st_gid : Là số nguyên biểu diễn GrouppID của file hoặc dir
+5.st_atime: Thời gian truye cập lần cuối của file or dir
+6.st_mtime: Thời gian sửa đổi lần cuối của file or dir
+7.st_ctime: Thời gian tạo họăc thay đổi lần cuối của file or dir
+
+
+Các flags quyền truy cập trong st_mode:
+S_IRUSR: quyền đọc cho người dùng
+S_IWUSR: quyền ghi cho user
+S_IXUSR: quyên thực thi cho user
+S_IRGRP: quyền đọc cho group
+S_IWGRP: quyền ghi cho group
+S_IXGRP: quyền thực thi cho group
+S_IROTH: quyền đọc cho other
+S_IWOTH: quyền ghi cho other
+S_IXOTH: quyền thực thi cho other
+
+Các Hàm MACRO thường dùng trong st_mode của cấu trúc struct stat để kiểm tra
+kiểu của tệp hoặc thư mục và quyền truy cập của chúng
+S_ISREG(mode): Kiểm tra xem tệp có kiểu là tệp thường (regular file) hay không.
+S_ISDIR(mode): Kiểm tra xem tệp có kiểu là thư mục (directory) hay không.
+S_ISCHR(mode): Kiểm tra xem tệp có kiểu là thiết bị ký tự (character device) hay không.
+S_ISBLK(mode): Kiểm tra xem tệp có kiểu là thiết bị khối (block device) hay không.
+S_ISFIFO(mode): Kiểm tra xem tệp có kiểu là đường ống (fifo) hay không.
+S_ISLNK(mode): Kiểm tra xem tệp có kiểu là liên kết tượng trưng (symbolic link) hay không.
+S_ISSOCK(mode): Kiểm tra xem tệp có kiểu là socket hay không (đối với mạng).
+
+Ví dụ: Bạn muốn kiểm tra file đó là file thuongf hay không 
+
+struct stat st;
+S_ISREG(st.stmode) 
+hoặc:
+Ta sử dụng S_IFMT (bit mask) để trích xuất kiểu tệp của 1 tệp hoặc thư mục từ trường 
+st_mode trong cấu trúc struct stat. Lý do là st_mode chứa 2 phần : kiểu tệp và quyền truy cập
+Nếu ta muốn lọc ra kiểu tệp ta phải sử dụng S_IFMT để tách riêng kiểu tệp ra để kiểm tra nó.
+Ví dụ:
+switch(st.st_mode & S_IFMT)
+{
+    case S_IFREG: printf("file regular");       break;
+    case S_IFDIR: printf("directory");          break;
+    // chú ý sự khác biệt giữa S_ISREG và S_IFREG//
+    S_ISREG : là hàm macro dùng để kiểm tra file
+    S_IFREG : là 1 bit mask (hằng số) dùng để biểu diễn kiểu tệp thường trong st_mode của struct stat
+    ...........
+
+}
+
+II. fstat() 
+Cú pháp :
+#include <sys/stat.h>
+int fstat(int filedes, struct stat *buf);
+
+Sử dụng để lấy thông tin tệp mà đã được mở bằng một fd sau đó lưu vào struct stat
+
+III. lstat()
+Cú pháp:
+#include <sys/stat.h>
+int lstat(const char *path, struct stat *buf);
+
+Cách sử dụng vẫn tương tự. Nếu tệp hoặc file thư mục là 1 symbolic link, thì lstat sẽ trả về
+thông tin của liên kết chứ không phải của tệp hoặc thư mục mà nó trỏ đến 
+
+Vậy symbolic link là gì  và cách tạo 1 symbolic link?
+Liên kết tượng trưng(symbolic link) là 1 loại tệp đặc biệt trong hệ thống tệp
+của hệ điều hành UNIX/Linux. Liên kết tượng trưng được sử dụng để tạo 1 tham chiếu hoặc 1 liên kết
+đến 1 tệp hoặc 1 thư mục trong hệ thống tệp. Điều này cho phép bạn tạo các đường dẫn tuyệt đối hoặc 
+tương đối mà k cần sao chép hoặc di chuyển tệp đó 
+
+Đặc điểm của symbolic link:
+1.Không chứa dữ liệu: Nó chỉ lưu trữ 1 đường dẫn tham chiếu đến file gốc
+2.Dùng để tạo đường dẫn thay thế : Khi truy cập vào symbolic link hệ thống sẽ chuyển hướng bạn đến
+file or dir mà liên kết đang tham chiếu
+Chú ý khi sử dụng:
+Khi bạn thay đổi tệp gốc sang 1 vị trí khác, liên kết tượng trưng vẫn k thay đổi, nó trỏ vào đường dẫn ban đầu
+Nếu bạn cố truy cập vào symbolic link lúc đó nó sẽ tham chiếu đến 1 thư mục k tồn tại, gọi là "broken link"
+Có thể sử dụng lệnh "mv" để thay đổi đường dẫn cho symbolic link
+
+Cú pháp để tạo 1 symbolic link: 
++ Trong terminal:
+    ln -s <đường dẫn gốc> <đường dẫn liên kết>
++ Trong code C:
+    symlink(sorce, link_name); trả về 0 nếu success;

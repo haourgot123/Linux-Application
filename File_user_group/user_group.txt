@@ -1,0 +1,20 @@
+1.chown(const char *pathname, uid_t owner,gid_t group)
+2. fchown(int fd, uid_t owner, gid_t group)
+3. int access(const char *pathname, int mode)
+   Dùng để kiểm tra quyền truy cập vào 1 file hoặc thư mực
+Các mode sử dụng trong hàm access:
+F_OK : kiểm tra sự tồn tại của file or dir
+R_OK: kiểm tra quyền đọc
+W_OK : kiểm tra quyền ghi
+X_OK : kiểm tra quyền thực thi
+return 0: if success
+return -1 : if fail
+
+4. chmod(const char *pathname, mode_t mode)
+Sử dụng để thay đổi quyền của 1 tệp hoặc 1 thư mục 
+Các mode được sử dụng:
+S_IRUSR: người dùng có quyền đọc 
+S_IWUSR: người dùng có quyền ghi
+S_IXUSR: người dùng có quyền thực thi 
+........ tương tự cho group và other
+return -1 : fail

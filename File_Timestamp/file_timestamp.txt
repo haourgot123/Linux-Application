@@ -1,0 +1,53 @@
+1. Hàm utime: Được sử dụng để thay đổi thời gian truy cập và sửa đổi của 1 tệp 
+Cú pháp: 
+#include <utime.h>
+int utime(const char *filename, const struct utimbuf *times)
+
+times: con trỏ trỏ đến một cấu trúc utimbuf chứa thông tin về thời gian truy cập và thời gian 
+sửa đổi cho tệp
+cấu trúc của utimbuf như sau:
+struct utimbuf
+{
+    time_t actime; //Thời gian truy cập
+    time_t modtime; // Thời gian sửa đổi
+}
+2.Hàm utimes: cần include <sys/time.h>
+int utimes(const char *filename, const struct timeval time[2]);
+
+- time là mảng 2 phần tử của cấu trúc timeval, trong đó time[0] là thời gian truy cập,
+còn time[1] là thời gian sửa đổi
+
+- Cấu trúc timeval có dạng như sau :
+struct timeval
+{
+    time_t tv_sec; //Thời gian truy nhập tính bằng giấy
+    time_t tv_usec; // Thời gian truy nhâp trinh bằng us
+}
+Hàm utime và utimes trả về 0 nếu thành công còn trả về 1 nếu error
+
+3. Hàm utimensat(int dirfd, const char *pathname, const struct timespect times[2],
+                int flags)
+Thư viện : fcntl.h | sys/stat.h
+
+-dirfd: Mô tả file  của thư mục cơ sở mà bạn muốn sử dụng để tìm tệp hoặc thư mục pathname
+Nếu bạn muốn tìm pathname trong thư mục hiện tại, bạn có thể sử dụng AT_FDCWD
+-pathname: Đường dẫn tới thư mục hoặc file mà bạn muốn truy cập thời gian 
+-times: Một mảng 2 phần tử của cấu trúc timespec trong đó times[0] là thời gian truy cập
+và times[1] là thời gian sửa đổi
+-flags: Các cờ để xác định cách cập nhật thời gian và xử lí tệp. Một số cờ phổ biến gồm
+"0" (cập nhật tgian truy cập và sửa đổi)
+AT_SYMLINK_NOFOLLOW : không theo dõi liên kết tượng trưng
+AT_NO_AUTOMOUNT: không tự động gắn kết với các thư mục tự động gắn kết 
+Cấu trúc timespec:
+struct timespec
+{
+    time_t tv_sec ; // giây
+    long tv_nsec; // nano giấy
+}
+Trả về 0 nếu thành công, trả về 1 nếu lỗi 
+4. Hàm futimens: Các thư viện tương tự như hàm utimensat
+
+Cú pháp: int futimens(int fd, const struct timespec times[2]);
+fd : mô tả file
+times: times[0] : time truy nhập
+       times[1]: time sửa 
