@@ -1,0 +1,22 @@
+1. unlink
+Xóa 1 tệp khỏi hệ thống tệp
+Cú pháp: int unlink(const char *path)
+return 0: nếu xóa thành công 
+return -1 nếu xóa thất bại
+2.remove
+Xóa 1 tệp khỏi hệ thống tệp 
+Cú pháp: int remove(const char *path)
+return 0: nếu xóa thành công 
+return -1: nếu xóa thất bại
+------ Sự khác biệt giữa remove và unlink-------------------
+1. Nguyên tắc hoạt động: 
++ remove: Tự động kiểm tra quyền truy cập và xác minh rằng tệp tồn tại trước khi xóa
+Nếu tệp tồn tại và người dùng có quyền xóa. Tệp sẽ được xóa và trả về 0, ngược lại trả về -1
++unlink: chỉ xóa tệp mà bạn cung cấp thông qua đường dẫn, nó không kiểm tra quyền truy cập và 
+quyền xóa của người dùng. Nếu tệp tồn tại và người dùng có quyền xóa nó sẽ xóa tệp và k trả về giá tị
+
+3. rename:
+Dùng để đổi tên hoặc di chuyển 1 tệp từ vị trií hiện tại sang vị trí khác
+Cú pháp: int rename(const char *old_filename, const char *new_filename)
+return 0: success
+return -1: fail

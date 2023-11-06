@@ -1,0 +1,111 @@
+1. #include <signal.h>
+
+void (*signal(int signum, void (*handler)(int)))(int);
+
+Dùng để đăng kí 1 xử lí tín hiệu để xử lí tín hiệu cụ thể khi nó được tạo ra bởi hệ thống
+hoặc quá trình khác.
+Tín hiệu là 1 một cách mà hệ thống hoặc quá trình gửi thông báo hoặc yêu cầu một hành động cụ thể
+từ quá trình hoặc ctrinh khác.
++signum: mã số tín hiệu mà bạn muốn xử lí, các mã số được đặt tên bằng các hằng số : SIGINT, SIGTERM,..
++handler: là 1 con trỏ đến hàm xử lí tín hiệu mà bạn muốn đăng kí. Hàm này có 1 đối số kiểu int
+đại diện cho mã số tín hiệu
+-Hàm signal trả về con trỏ đến hàm xử lí tín hiệu cũ nếu có hoặc SIG_ERR nếu có lỗi
+
+các signum:
+SIGINT (2) : Tín hiệu này thường sử dụng khi bạn nhấn Ctr+C trong terminal
+Nó được sử dụng để yêu cầu quá trình kết thúc
+SIGQUIT (3): Tín hiệu này thường đc gửi khi bạn nhấn Ctr+\ trong terminal
+Nó được sử dụng để yêu cầu quá trình kết thúc, thường kèm theo lỗi (core dump)
+SIGKILL (9) : Dùng để kill 1 qua trình k cần phản hồi từ quá trình đó. Nó k thể bị chặn
+hoặc xử lí
+SIGABRT (6):  Thường được sử dụng để báo cáo về 1 tình huống lỗi nghiêm trọng mà chương trình k thể xử lí
+và cần phải kết thúc
+
+
+2. #include <signal.h>
+
+int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);
+
+Hàm này được sử dụng để thay đổi hoặc truy xuất thông tin về xử lí tín hiệu cho 1 tín hiệu cụ thể
+Hàm này cung cấp 1 cách linh hoạt so với hàm signal để quản lí xử lí tín hiệu vì nó cho phép ban
+xác định rõ ràng hành động cụ thể cho tín hiệu , bao gôm cả sử dụng hàm xử lí tín hiệu tùy chỉnh 
+
++signum: Mã số tín hiệu 
++act: Con trỏ trỏ đến cấu trúc struct sigaction chứa thông tin về hành động mà bạn muốn thực hiện
+khi tín hiệu được gửi
++oldact: Con trỏ trỏ đến cấu trúc struct sigaction sẽ điền thông tin về hành động cũ của tín hiệu vào 
+
+struct sigaction {
+    void (*sa_handler)(int);    // Con trỏ đến hàm xử lý tín hiệu
+    sigset_t sa_mask;           // Tập tín hiệu bị chặn trong quá trình xử lý tín hiệu
+    int sa_flags;               // Các cờ và tùy chọn
+    void (*sa_sigaction)(int, siginfo_t *, void *); // Con trỏ đến hàm xử lý tín hiệu với thông tin mở rộng (nếu sử dụng)
+};
+
++sa_handler: là con trỏ trỏ đến hàm tín hiệu
++sa_mask: Đây là tập tín hiệu bị chặn trong quá trình xử lí tín hiệu.Khi 1 tín hiệu được xử lí
+tín hiệu đó trong tập này sẽ bị chặn, tức là hệ thống sẽ không gửi tín hiệu đó cho quá trình xủ lí 
+Điều này đảm bảo rằng  xử lí tín hiệu sẽ không bị gián đoạn
++ sa_flags: Đây là 1 số cờ và tùy chọn điều chỉnh cách sử lí tín hiệu.
++sa_sigaction: Đây là con trỏ trỏ đến hàm xử lí tín hiệu với thông tin mở rộng 
+
+3.#include <signal.h>
+
+int kill(pid_t pid, int sig);
+
+Dùng để gửi 1 tín hiệu đến 1 quá trình  hoặc 1 nhóm quá trình. Hàm này cho phép bạn tương tác với các quá trình
+khác bằng cách gửi các tín hiệu khác nhau
+
++pid: là số hiệu quá trình(process ID) hoặc nhóm quá trình (process group ID)
+mà bạn muốn gửi tín hiệu tới
++sig: Đây là mã số tín hiệu mà bạn muốn gửi
+
+4.
+#include <signal.h>
+
+int raise(int sig);
+Dùng để gửi 1 tín hiệu đến tiến trình hiện tại
+
+5.#include <unistd.h>
+
+unsigned int alarm(unsigned int seconds);
+
+Dùng để đặt 1 hẹn giờ để tạo ra 1 tín hiệu sau 1 thời gian xác định.
+
++seconds là thời gian chờ, sau khi hết tgian này hàm alarm sẽ tạo ra 1 signal SIGALRM
+
+6.int sigemptyset(sigset_t *set);
+Dùng để thao tác với tập tín hiệu. Hàm này dùng để khởi tạo 1 tập tín hiệu rỗng, tức là
+không có tín hiệu nào 
+ +set: con trỏ đến 1 biến kiểu sigset_t , biểu diễn 1 tập tín hiệu. Đây là 1 ctdl dạng bitmask
+ trong đó mỗi bit tương ứng với 1 tín hiệu cụ thể.
+ Hàm sigemptyset sẽ đặt tất cả các bit  thành 0, tạo ra tập tín hiệu rỗng
+
+7.int sigfillset(sigset_t *set);
+
+Thiết lập 1 tập tín hiệu sao cho tất cả tín hiệu đã được định nghĩa trong hệ thống đc thêm 
+vào tệp này.
+Hàm sigfillset sẽ đặt tất cả bit trong tập này thành 1
+
+8.int sigaddset(sigset_t *set, int signum);
+
+Dùng để thêm 1 tín hiệu vào tập tín hiệu
+
+9.int sigismember(const sigset_t *set, int signum);
+Kiểm tra sự tồn tại của 1 tín hiệu trong tập tín hiệu
+
+10.int sigdelset(sigset_t *set, int signum)
+Dùng để xóa 1 tín hiệu khỏi tập tín hiệu
+
+11.int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
+Dùng để thay đổi hoặc truy vấn tập tín hiệu cho tiên trình hiện tại. Tập tín hiệu là
+1 tập các tín hiệu mà tiến trình hiện tại được chặn hoặc cho phép nhận trong quá trình thực thi
+
++how: Điều chỉnh cách xử lý tập tín hiệu
+SIG_BLOCK: Thêm tín hiệu từ set vào tập tin hiện tại
+SIG_UNBLOCK: Loại bỏ tín hiệu  từ set khỏi tập tin hiện tại
+SIG_SETMASK: Thay thế tập tín hiệu hiện tại bằng set
++set : con trỏ đến tập tín hiệu mà bạn muốn sử dụng để thay đổi tập tin hiện tại
++oldste: tập tín hiệu hiện tại 
+
+

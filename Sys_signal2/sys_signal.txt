@@ -1,0 +1,30 @@
+1.int sigqueue(pid_t pid, int sig, const union sigval value);
+Sử dụng để gửi tín hiệu với 1 giá trị dữ liệu đến 1 tiến trình hoặc 1 tiến trình con cụ thể
+Hàm này cung cấp khả năng truyền dữ liệu kèm theo tín hiệu
++pid : process id của tiến trình mà bạn muốn gửi dữ liệu đến
++sig: số hiệu của tín hiệu đó
++value: là 1 kiểu union sigval chứa dữ liệu mà bạn muốn truyền kèm theo tín hiệu
+union sigval gồm 2 trường:
++sival_int: Đây là 1 trường số nguyên. Bạn có thể gửi 1 số nguyên bất kì kèm theo tín hiệu
++sival_ptr: Đây là 1 trường con trỏ. Bạn có thể dùng trường con trỏ để trỏ đến 1 vùng dữ liệu cụ thể
+hoặc 1 đối tượng cụ thể kèm theo tín hiệu
+
+
+Lưu ý khi sử dụng hàm sigaction:
++ sa_flags(trong struct sigaction): SA_SIGINFO
+SA_SIGINFO cho bạn biết hàm xử lí tín hiệu sẽ nhận thông tin chi tiết về tín hiệu thay vì chỉ nhận số hiệu của tín hiệu
+
+Khi sử dụng SA_SIGINFO, hàm xử lí tín hiệu sẽ có thêm 1 kiểu siginfo_t bổ sung trong danh sách tham số của nó để lưu
+trữ thông tin về tín hiệu: ID tiến trình gửi tín hieuek, tgian tạo tín hiệu,....
+
+struct siginfo_t {
+    int      si_signo;    // Số hiệu của tín hiệu
+    int      si_errno;    // Số lỗi nếu có
+    int      si_code;     // Mã code mô tả tín hiệu
+    pid_t    si_pid;      // ID của tiến trình gửi tín hiệu
+    uid_t    si_uid;      // ID của người dùng gửi tín hiệu
+    int      si_status;   // Trạng thái kết thúc nếu có
+    clock_t  si_utime;    // Thời gian CPU tiêu hao bởi tiến trình
+    clock_t  si_stime;    // Thời gian CPU hệ thống tiêu hao
+    sigval_t si_value;    // Dữ liệu kèm theo tín hiệu (kiểu union sigval)
+}

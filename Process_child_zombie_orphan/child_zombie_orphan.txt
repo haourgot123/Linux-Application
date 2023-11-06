@@ -1,0 +1,28 @@
+1. SIGCHLD
+
+Là tín hiệu gửi đến tiến trình cha khi 1 trong các tiến trình con của nó kết thúc hoặc thay
+đổi trạng thái (stopped, continued). Thông qua việc sử dụng SIGCHLD, tiến trình cha có thể theo dõi
+tiến trình con và xử lí khi chúng kết thúc hoặc thay đổi trang thái
+
+
+2. Orphan process
+
+Tiến trình cha kết thúc trước tiến trình con, tiến trình con trở thành một tiến trình mồ côi. Điều này 
+xảy ra khi tiến trình cha đã tạo tiến trình con bằng fork nhung sau đó kết thúc trước khi tiến trình con hoàn thành
+
+Khi tiến trình cha kết thúc, hệ thống sẽ chuyển quyền kiểm soat của 1 tiến trình con cho 1 tiến trình gốc(root process)
+thường sẽ là tiến trình  "init" có PID = 1. Tiến trình init sẽ trở thành tiến trình cha của tiến trình con mồ côi
+và giải phóng tài nguyên cho tiến trình con.
+
+
+3. Zombie process
+
+Khi 1 tiến trình con kết thúc việc thực thi(tức là nó đã gọi hàm exit()), nhưng vẫn tồn tại trong bảng tiến trình
+cho phép tiến trình cha truy xuất thông tin về nó
+
+Tiến trình zombie tồn tại trong khoảng thời gian ngắn giữa lúc nó kết thúc và lúc tiến trình cha của nó thu thập
+thông tin về việc kết thúc của con. Trong khoảng thời gian này, tiến trình cha vẫn truy cập được thông tin của con, như mã thoat để
+xem tiến trình của con kết thúc như thế nào
+
+Khi tiến trình cha đã thu thập thông tin về con (thông qua hàm wait hoặc waitpid) tiến trình zombie
+sẽ bị loại bỏ khỏi bảng tiến trình

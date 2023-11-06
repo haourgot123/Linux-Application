@@ -1,0 +1,6 @@
+1. mkdir(name_dir, permission)
+2. rmdir(name_dir)
+3.DIR *opendir(const char dir_name)
+4.DIR *readdir(const char dir_name)
+5. getcwd(char *buff, size(buff));
+6. chdir(path_name) : thay doi thu muc lam viec

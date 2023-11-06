@@ -1,0 +1,15 @@
+1. char *strcat(char *dest, const char *src)
+Dùng để nối chuỗi
+2. char *strncat(char *dest, const char *src, size_t n)
+Dùng để nối chuỗi , cho phép chỉ định số lượng kí tự tối đa mà bạn muốn nối từ chuỗi
+nguồn vào chuỗi đích
+Giúp mình kiểm soat đc kích thước chuỗi và tránh tràn bộ đệm
+3.char *strcpy(char *dest, const char *src);
+Dùng copy chuỗi nguồn vào chuối đích
+4.char *strncpy(char *dest, const char *src, size_t n);
+Dùng để copy số lượng kí tự từ 1 chuỗi nguồn đến 1 chuỗi đích 
+5. int strcmp(const char *str1, const char *str2)
+So sanh chuoi
+6. char *strchr(const char *str, int character);
+Dùng để tìm kiếm 1 kí tự cụ thể trong chuỗi.
+Hàm này sẽ trả về kí tự đầu tiên xuất hiênj trong chuỗi 

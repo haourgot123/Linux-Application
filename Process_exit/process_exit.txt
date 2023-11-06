@@ -1,0 +1,17 @@
+1.int atexit(void (*function)(void));
+Dùng để đăng kí hàm thực thi tự động khi ctrinh keté thúc
++function: Là 1 con trỏ trỏ đến hàm mà bạn muốn đăng kí để thực hiện tự động khi ctrinh 
+kết thuc
+
+2. Phân biệt giữa hàm exit và _exit
++ exit:
+là 1 hàm thư viện trong C
+Khi gọi exit nó thực hiện 1 số công việc cuối cùng, bao gồm gửi bất kì dữ liệu nào
+còn lại trong bộ đêm xuống file đầu ra và gọi tất cả hàm đã được đăng kí bằng atexit
+Sau khi exit được gọi, ctrinh kết thúc và trả lại 1 mã thoats cho hệ điều hành
+
++_exit:
+là 1 hàm hệ thống, không thuộc thư viện c, và thường được gọi từ hệ thống, thay vì từ mã nguồn C
+và không thực hiện các công việc dọn dẹp cuối cùng như hàm exit
+Khi bạn gọi hàm _exit ctrinh sẽ kết thúc ngay lập tức mà k thực hiện dọn dẹp hoặc gọi các hàm đã được
+đăng kí bằng atexit

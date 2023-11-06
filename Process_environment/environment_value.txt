@@ -1,0 +1,32 @@
+Biến môi trường:
+Là các biến chứa thông tin về môi trường hệ thống được sử dụng bởi các 
+quá trình và ứng dụng trong hệ điều hành. Các biến môi trường chứa thông tin như
+đường dẫn, tên người dung, cấu hình, ngôn ngữ, ....
+
+Bạn có thể đặt 1 biến môi trường mới bằng lệnh
+export trong terminal
+VD: export MY_VAR = 1234
+để xóa: unset MY_VAR hoặc export MY_VAR=
+
+Biến eviron là 1 biến global trong C, được sử dụng để
+tham chiếu đến môi trường của hệ thống.
+Môi trường này chứa các biến môi trường và thông tin 
+liên quan đến quá trình thực thi của chương tình. Biến environ
+thường là 1 mảng các con trỏ trỏ tới chuỗi và chúng ta có thể sử dụng
+nó để truy cập các biến môi trường và giá trị của chúng
+
+2.char *getenv(const char *name);
+Dùng để truy xuất 1 biến môi trường cụ thể trong môi trường hệ thống.
+Hàm này trả về giá trị của biến môi trường hoặc trả về NULL nếu k tồn tịa
+
+3.int setenv(const char *name, const char *value, int overwrite);
+Dùng để đặt và tạo các biến môi trương
++name: Tên biến môi trường bạn muốn tạo
++value: Giá trị biến môi trường bạn muốn gán
++ overwrite: Là 1 gía trị nguyên, nếu bạn đặt nó là 1, nó sẽ ghi đè biến môi trường nếu nó đã tồn tại
+nếu đặt là 0, nó sẽ k ghi đè nếu biến môi trường đã tồn tại 
+
+
+4. int unsetenv(const char *name)
+Dung de xoa bien moi truong
+

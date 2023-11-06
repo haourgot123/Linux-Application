@@ -1,0 +1,22 @@
+1. Hàm puts():
+Dùng để in một chuỗi ra màn hình và tự động thêm dấu xuống dòng
+2.putchar()
+Dùng để in 1 chữ cái ra màn hình
+3.fputc()
+Dùng để thêm 1 kí tự char vào 1 file
+int fputc(int character, FILE *stream)
+4.fputs():
+Dungf để ghi 1 chuỗi vào 1 file
+int fputs(const char *str, FILE *stream);
+Trong đó:
+str: Chuỗi cần ghi vào tệp.
+stream: Con trỏ đến tệp mục tiêu mà bạn muốn ghi chuỗi vào.
+5. getchar()
+Dùng để đọc 1 kí tự từ bàn phím
+6. fgets()
+Dùng để đọc 1 chuỗi từ 1 tệp hoặc từ nguồn chuẩn đầu vào 
+char *fgets(char *str, int size, FILE *stream)
+
++str: Là con trỏ đến bộ đệm mà chuỗi sẽ được lưu trữ
++size: Là số nguyên biểu thị kích thước tối đa mà bạn muốn đọc, bao gôm cả kí tự kết thúc chuối
++stream: là con trỏ trỏ đến tệp mà bạn muốn đọc, thường là stdin

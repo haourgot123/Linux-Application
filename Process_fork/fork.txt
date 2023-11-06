@@ -1,0 +1,14 @@
+1.#include <unistd.h>
+pid_t fork(void);
+
+Hàm fork trong C được sử dụng để tạo 1 quá trình con từ quá trình cha hiện tại. Quá
+trình con được tạo từ hàm fork là 1 bản sao của quá trình cha , và nó bắt đầu chạy từ fork
+
+Trong đó fork trả về 1 kiểu pid_t , có các trường hợp khả thi:
++Trong quá trình cha: fork trả về ID của quá trình con
++Trong quá trình con: fork trả về 0
++Nếu có lỗi: fork trả về -1
+
+Chú ý: Hàm fork trả về 2 lần trong cùng 1 chương trình. Điều này xảy ra do sau khi gọi
+fork, qúa trình cha và con đều tiếp tuc thực hiện từ điểm fork được gọi. Sau khi đc gọi 
+quá trình cha và con cùng chia sẻ 1 mã chương trình.

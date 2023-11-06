@@ -1,0 +1,57 @@
+1. int uname(struct utsname *buff)
+Dùng để truy xuất dữ liệu thông tin về hệ điều hành đang chạy 
+Thông tin này bao gồm : tên hệ điều hành, phiên bản , kiến trúc hệ thống 
+2. int sysinfo(struct sysinfo *info)
+Dùng để lấy thông tin về tài nguyên hệ thống ví dụ như RAM có sẵn và sử dụng
+`struct sysinfo` là một cấu trúc trong ngôn ngữ lập trình C, chứa thông tin về tài nguyên hệ thống trên hệ điều hành Linux. 
+Các thành phần (hoặc trường) của `struct sysinfo` bao gồm:
+
+1. `uptime` (unsigned long): Thời gian hệ thống đã hoạt động tính bằng giây.
+
+2. `loads` (array of unsigned long): Một mảng 3 phần tử chứa thông tin về tải hệ thống. Đây là một danh sách 3 giá trị tải trung bình trong 1, 5 và 15 phút gần đây.
+
+3. `totalram` (unsigned long): Tổng dung lượng RAM trên hệ thống, tính bằng kilobyte.
+
+4. `freeram` (unsigned long): Dung lượng RAM còn trống, tính bằng kilobyte.
+
+5. `sharedram` (unsigned long): Dung lượng RAM được sử dụng cho các phần chia sẻ, tính bằng kilobyte.
+
+6. `bufferram` (unsigned long): Dung lượng RAM được sử dụng cho bộ đệm, tính bằng kilobyte.
+
+7. `totalswap` (unsigned long): Tổng dung lượng swap space (bộ nhớ đệm) trên hệ thống, tính bằng kilobyte.
+
+8. `freeswap` (unsigned long): Dung lượng swap space còn trống, tính bằng kilobyte.
+
+9. `procs` (unsigned short): Số lượng tiến trình đang chạy trên hệ thống.
+
+10. `totalhigh` (unsigned long): Tổng dung lượng RAM trên hệ thống dành cho các quá trình 32-bit (hiện đã ít được sử dụng).
+
+11. `freehigh` (unsigned long): Dung lượng RAM 32-bit còn trống trên hệ thống.
+
+12. `mem_unit` (unsigned int): Đơn vị tính dung lượng RAM trong cấu trúc (bytes).
+
+13. `kernelname` (char[65]): Tên hệ điều hành kernel.
+
+14. `_f_[15]` (int[15]): Một mảng các giá trị nguyên dự phòng.
+
+Lưu ý rằng tất cả các giá trị dung lượng (như `totalram`, `freeram`, `totalswap`, `freeswap`) được tính bằng kilobyte.
+Thông tin trong cấu trúc `struct sysinfo` cung cấp một cái nhìn tổng quan về tình trạng hệ thống tài nguyên trong thời điểm hiện tại.
+3. int gethostname(char *name, size_t len);
+Dùng để lấy tên của máy tính 
+4. long sysconf(int name);
+Dùng để truy xuất thông tin của hệ thống, chẳng hạn như giới hạn của hệ thống, tài nguyên hệ thống và cấu hình hệ thống 
++ name là tên cấu hình mà bạn muốn truy xuất
+1 số name: 
+1. `_SC_ARG_MAX`: Kích thước tối đa của đối số dòng lệnh.
+2. `_SC_CHILD_MAX`: Số tiến trình con tối đa mà một tiến trình cha có thể tạo.
+3. `_SC_OPEN_MAX`: Số tệp mở tối đa mà một tiến trình có thể mở.
+4. `_SC_PAGE_SIZE`: Kích thước trang (page size) mặc định.
+5. `_SC_PHYS_PAGES`: Tổng số trang vật lý trong hệ thống.
+6. `_SC_AVPHYS_PAGES`: Số trang vật lý sẵn có.
+7. `_SC_NPROCESSORS_ONLN`: Số lượng bộ xử lý trực tuyến (CPU) hiện đang hoạt động.
+8. `_SC_CLK_TCK`: Số xung nhịp mỗi giây.
+9. `_SC_HOST_NAME_MAX`: Độ dài tên máy tính tối đa.
+10. `_SC_LOGIN_NAME_MAX`: Độ dài tên người dùng tối đa.
+11. `_SC_STREAM_MAX`: Số luồng đồng thời tối đa mà một tiến trình có thể mở.
+12. `_SC_TTY_NAME_MAX`: Độ dài tên thiết bị đầu cuối (TTY) tối đa.
+13. `_SC_VERSION`: Phiên bản hệ điều hành hoặc chuẩn C được sử dụng.

@@ -1,0 +1,42 @@
+1. Hàm link:
+Để tạo liên kết tệp trong hệ thống Linux. Dùng để tạo liên kết giữa tệp gốc và tệp mới
+
+Cú pháp:
+int link(const char *oldpath, const char *newpath)
+
+return 0: thanhf công
+return -1: thất bại
+
+2. Ham symlink:
+Để tạo liên kết tượng trưng(symbolic link) trong linux. Liên kêts tượng trưng  là 1 tệp
+tin đặc biệt tror đên 1 tệp gốc hoặc thư mục khác. 
+Cú pháp: 
+
+int symlink(const char *target, const char *linkpath)
+
+return 0: thanh công 
+return -1: thất bại
+
+3.Hàm readlink
+Dùng để đọc 1 giá trị thực sự của symbolic link. Và trả về đường dẫn mục tiêu liên kết 
+
+Cú pháp: ssize_t readlink(const char *pathname, char *buf, size_t bufsize);
+
+return -1: thất bại
+return 0: thành công
+Đường dẫn mục tiêu sẽ được ghi vào mảng buf
+
+4. Lệnh "ln" trong linux
+
+Sử dụng để tạo liên kết giữa các tệp và các thư mục
+
++ hard link(liên kết cứng)
+Một hard link là 1 liên kết cứng đến cùng 1 inode trong hệt thống tập tin.Khi tạo 1 hard link
+file k có sư phân biệt nào giữa tệp gốc và hard link file đó khi 1 bên thay đổi, bên còn lại thay đổi theo 
+Hard link file k thể tạo cho các thư mục
+Cú pháp : ln source_file_name link_file_name
++ Symbolic Link (Liên kết tượng trưng)
+Một symbolic link  là 1 tệp tin đặc biệt trỏ đến 1 tệp hoặc 1 thư mục khác. Nó cho phép tạo ra 
+liên kết giữa các tệp và thư mục mà k làm thay đổi dữ liệu thực tế trong file gốc
+Symbolic link có thể trỏ đến thư mục hoặc hệ thống file 
+Cú pháp: ln -s source_file symlink_file

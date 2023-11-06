@@ -1,0 +1,41 @@
+1. time_t time(time_t *time)
+Dùng để lấy thời gian hiện tại của hệ thống.trả về số giây tính từ 1/1/1970 (0h:0p:0s)
+2. int gettimeofday(struct timeval *tv, struct timezone *tz);
+Dùng để lấy thơi gian hiện tại của hệ thống(bao gồm cả giây và micro giây) từ hệ thống.
++tv là một con trỏ đến một cấu trúc struct timeval để lưu trữ thông tin về thời gian.
++tz là một con trỏ đến một cấu trúc struct timezone (thường được đặt thành NULL vì không còn cần thiết).
+struct timeval {
+    time_t tv_sec;      // Số giây
+    suseconds_t tv_usec; // Số micro giây (1 giây = 1,000,000 micro giây)
+};
+3. char *ctime(const time_t *time);
+Dùng để chuyển đổi 1 số kiểu nguyên thành 1 chuỗi thời gian dễ đọc
+4.char *ctime_r(const time_t *time, char *buf);
+Dùng để chuyển đổi 1 số kiểu nguyên thành 1 chuỗi thời gian dễ đọc,và lưu vào 1 chuối buff
+5.struct tm *localtime(const time_t *time);
+Dùng để chuyển đổi 1 số nguyên kiểu time_t thanh 1 cấu trúc struct tm, đại diện cho thời gian cục bộ
+. Cấu trúc struct tm chứa các thông tin  về thời gian như: giờ, phút, giây,...
+6.struct tm *localtime_r(const time_t *time, struct tm *result);
+Tương tự như hàm localtime tuy nhiên dữ liệu được lưu trong 1 buffer cụ thể mà bạn cung cấp
+struct tm {
+    int tm_sec;   // Giây (0-59)
+    int tm_min;   // Phút (0-59)
+    int tm_hour;  // Giờ (0-23)
+    int tm_mday;  // Ngày trong tháng (1-31)
+    int tm_mon;   // Tháng (0-11; 0 = tháng 1, 11 = tháng 12)
+    int tm_year;  // Năm kể từ 1900
+    int tm_wday;  // Ngày trong tuần (0-6; 0 = Chủ Nhật)
+    int tm_yday;  // Ngày trong năm (0-365; 0 = ngày đầu năm)
+    int tm_isdst; // Cờ DST (0 = không áp dụng DST, 1 = áp dụng DST, -1 = thông tin không khả dụng)
+};
+7.struct tm *gmtime(const time_t *time);
+Dùng để chuyển 1 sô nguyên kiểu time-t thành 1 cấu trúc struct tm đại diện cho thời gian.
+8.struct tm *gmtime_r(const time_t *time, struct tm *result);
+Tương tự như trên.
+9.time_t mktime(struct tm *timeptr);
+Dùng để chuyển cấu trúc từ struct tm sang 1 số time_t
+10. char *asctime(const struct tm *timeptr);
+Dùng để chuyển đổi 1 cấu trúc struct tm thành 1 chuỗi kí tự dễ đọc.
+11. size_t strftime(char *str, size_t maxsize, const char *format, const struct tm *timeptr);
+Dùng để in ra định dang thời gian theo mong muốn
+trong c conf cos ham strptime co chuc nang nguoc lai voi strftime

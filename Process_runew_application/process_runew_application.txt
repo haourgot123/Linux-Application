@@ -1,0 +1,17 @@
+1. int execve(const char *path, char *const argv[], char *const envp[]);
+
+Được dùng để thực thi 1 chương trình khác từ bên trong 1 tiến trình hiện tại
+Hàm này thường được sử dụng để thay đổi chương trình chạy trong 1 tiến trình
+thành 1 chương trình khác mà bạn chỉ định
+
++path: Đường dẫn tới tệp thực thi mà bạn muốn thay thế tiến trình hiện tại
++argv: Một mảng con trỏ chuỗi đại diện cho các đối số mà chương trình mới sẽ nhận được.
+Mảng này kết thúc bằng 1 con trỏ NULL
++envp: Một mảng con trỏ chuỗi đại diện cho các biến môi trường mà ctrinh mới sẽ sử dụng.
+Mảng này kết thúc bằng 1 con trỏ NULL
+
+Khi bạn gọi hàm execve, nó sẽ thực hiện các bước sau:
+1.Nó tải chương trình từ đường dẫn path vào tiến trình hiện tại.
+2.Nó sẽ thay thế tiến trình hiện tại bằng chương trình mới tải lên.
+3.Chương trình mới được thực thi với các đối số và biến môi trường được chỉ định.
+4.Nếu execve thành công, tiến trình hiện tại không còn tồn tại và sẽ được thay thế bởi tiến trình mới.

@@ -1,0 +1,12 @@
+1. clock_t times(struct tms *buff)
+Dùng để lấy thời gian của quá trình(process) hiện tại và các quá trình con 
+
+Thư viện : sys/times.h
+struct tms
+{
+    tms_utime; Thời gian CPU dành cho quá trình hiện tại
+    tms_stime; Thời gian CPU dành cho quá trình hiện tại khi thực hiện hoạt động của hê thống
+    tms_cutime; Thời gian CPU giành cho quá trình con
+    tms_cstime; THhowif gian CPU giành cho tất cả các hoạt động của hệ thống và quÁ trình con
+
+}

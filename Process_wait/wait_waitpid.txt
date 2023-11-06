@@ -1,0 +1,44 @@
+1.#include <sys/types.h>
+#include <sys/wait.h>
+
+pid_t wait(int *status);
+
+Hàm wait trong C dùng trong tiến trình cha để đợi tiến trình con kết thúc
+
+Hàm wait trả về kiểu pid_t là process ID của quá trình con đã kết thúc
+
+int *status là con trỏ trỏ đến 1 kiểu biến int, trong đó thông tin về kết quả của 
+quá trình con sẽ lưu sau khi nó kết thúc, Nếu status = 0 -  quá trình con kết thúc bình thường
+
+Các hàm để kiểm tra biến status:
++WIFEXITED(status): là 1 hàm macro dùng để kiểm tra 1 quá trình con kết thúc bình thường hay không
+return 0: gặp lỗi 
+return != 0: bình thường
+
++WEXITSTATUS(status): dùng để lấy mã exit của 1 quá trình con kết thúc bình thường
++WTERMSIG(status): Sử dụng để lấy số liệu của tín hiệu mà quá trình con đã nhận khi kết thúc k bình thường
+
+
+2. pid_t waitpid(pid_t pid, int *status, int options);
+
+Dùng để chờ đợi sự kết thúc của 1 tiến trình con và trả về thông tin về trạng thái kết thúc của tiến trình con.
+Hàm này thường được sử dụng trong quản lí tiến trình và đồng bộ hóa tiền trình trong ứng dụng đa tiến trình
+
++pid: Tham số này xác định tiến trình con mà bạn muốn đợi. Giá trị pid có thể là 1 trong các giá trị sau 
+-1: Đơị cho bất kì tiến trình con nào
+0: Đợi cho bất kì tiến trình cong nào trong cùng nhóm tiến trình với tiến trình gọi hàm
+Số nguyên dương: Đợi cho 1 tiến trình con cụ thể với PID được chỉ điịnh 
+Số nguyên âm: Đợi cho bất kì tiến trình con nào có ID nhóm tiến trình bằng giá trị tuyệt đối của số nguyên âm 
+đã chỉ định
++status: 1 Con trỏ trỏ đến 1 số nguyên, nơi trang thái kết thúc của tiến trình con được lưu trữ
+Trạng thái này có thể được sử dụng để xác định cách tiến trình con đã kết thúc(ví dụ: trang thái thoát hoặc tín hiệu gây ra kết thúc)
++options: Cac tùy chọn khác để kiểm soát hành vi của hàm waitpid.Các tùy chọn phổ biến bao gồm:
+-WNOHANG: trả về ngay lập tức nếu k có tiến trình con nào kết thúc
+-WUNTRACED: trả về tiến trình con đã bị dừng, nhưng chưa kết thúc
+
+Hàm waitpid trả về ID của tiến trình con đã kết thúc hoặc -1 nếu có lỗi 
+
+
+
+
+
